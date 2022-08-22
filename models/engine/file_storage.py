@@ -33,6 +33,14 @@ class FileStorage:
         with open(self.__file_path, 'w', encoding='utf-8') as f:
             json.dump(new_dict, f)
 
+    def delete(self, obj):
+        """Deletes obj from the __objects dictionary"""
+        key = obj.__class__.__name__ + "." + obj.id
+        if key in self.__objects:
+            del self.__objects[key]
+        else:
+            return False
+
     def reload(self):
         """Deserializes a json string from a json file to a
         dictionary __objects"""
