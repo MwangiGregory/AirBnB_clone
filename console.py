@@ -26,6 +26,43 @@ class HBNBCommand(cmd.Cmd):
                 models.storage.save()
                 print(obj.id)
 
+    def do_update(self, line):
+        """Update <class name> <id> <attribute name> "<attribute value>"
+        Updates and instance based on the class name and id by
+        adding or updating attribute"""
+        args = line.split(" ", 3)
+        if len(args) == 0:
+            print("** class name missing **")
+        elif args[0] not in self.class_list:
+            print("** class doesn't exist **")
+        elif len(args) < 2:
+            print("** instance id missing **")
+        elif len(args) >= 2:
+            objects = models.storage.all()
+            key = [k for k in objects.keys() if k.endswith(args[1])]
+            if len(key) == 0:
+                print("** no instance found **")
+            else:
+                if len(args) < 3:
+                    print("** attribute name missing **")
+                elif len(args) < 4:
+                    print("** value missing **")
+                else:
+                    obj = objects[key[0]]
+                    attr_name = args[2]
+                    attr_val = args[3]
+                    if type(attr_name) in [int, float, str]:
+                        if attr_name == "id":
+                            pass
+                        else:
+                            attr_name_type = type(attr_name)
+                            attr_val = attr_name_type(attr_val)
+                            setattr(obj, attr_name, attr_val)
+                            models.storage.save()
+                    else:
+                        pass
+
+
     def do_show(self, arg):
         """show class_name object_id
 
@@ -73,6 +110,21 @@ class HBNBCommand(cmd.Cmd):
                         models.storage.save()
                     else:
                         print("** no instance found **")
+        return False
+
+    def do_all(self, arg):
+        """all [class_name]
+        Print all string representations of all instances
+        based or not on the class name"""
+        if len(arg) == 0:
+            objects = models.storage.all()
+            list_objects = [str(o) for o in objects.values()]
+            print(list_objects)
+        elif arg in self.class_list:
+            objs = models.storage.all()
+            print([str(o) for k, o in objs.items() if k.startswith(arg)])
+        elif arg not in self.class_list:
+            print("** class doesn't exist **")
         return False
 
     def do_EOF(self, arg):
