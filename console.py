@@ -1,14 +1,15 @@
 #!/usr/bin/python3
 """This module defines a custom cmd class"""
 import cmd
-from models.base_model import BaseModel
 import models
+from models.base_model import BaseModel
 
 
 class HBNBCommand(cmd.Cmd):
     """Defines an airbnb website clone command line
     intepreter"""
     prompt = '(hbnb)'
+    class_list = ['BaseModel']
 
     def do_create(self, line):
         """create class_name
@@ -17,11 +18,10 @@ class HBNBCommand(cmd.Cmd):
         if not line:
             print("** class name missing **")
         else:
-            try:
-                obj = eval(line + '()')
-            except NameError:
+            if line not in self.class_list:
                 print("** class doesn't exist **")
             else:
+                obj = eval(line + "()")
                 models.storage.new(obj)
                 models.storage.save()
                 print(obj.id)
@@ -36,12 +36,9 @@ class HBNBCommand(cmd.Cmd):
             print("** class name missing **")
         elif len(args_list) >= 1:
             obj_className = args_list[0]
-            try:
-                temp_obj = eval(obj_className + '()')
-            except NameError:
+            if obj_className not in self.class_list:
                 print("** class doesn't exist **")
             else:
-                del temp_obj
                 if len(args_list) == 1:
                     print("** instance id missing **")
                 elif len(args_list) >= 2:
@@ -53,6 +50,30 @@ class HBNBCommand(cmd.Cmd):
                         print(str(dict_objects[key]))
                     else:
                         print("** no instance found **")
+
+    def do_destroy(self, line):
+        """ destroy class_name instance_id
+        Deletes an instance base on the class_name and id"""
+        args = line.split()
+        if len(args) == 0:
+            print("** class name missing **")
+        elif len(args) >= 1:
+            if args[0] not in self.class_list:
+                print("** class doesn't exist **")
+            else:
+                if len(args) == 1:
+                    print("** instance id missing **")
+                elif len(args) >= 2:
+                    class_name = args[0]
+                    obj_id = args[1]
+                    key = class_name + "." + obj_id
+                    dict_objects = models.storage.all()
+                    if key in dict_objects:
+                        models.storage.delete(dict_objects[key])
+                        models.storage.save()
+                    else:
+                        print("** no instance found **")
+        return False
 
     def do_EOF(self, arg):
         """Exit the hbnb console"""
