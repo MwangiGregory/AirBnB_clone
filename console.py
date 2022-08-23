@@ -3,13 +3,14 @@
 import cmd
 import models
 from models.base_model import BaseModel
+from models.user import User
 
 
 class HBNBCommand(cmd.Cmd):
     """Defines an airbnb website clone command line
     intepreter"""
     prompt = '(hbnb)'
-    class_list = ['BaseModel']
+    class_list = ['BaseModel', 'User']
 
     def do_create(self, line):
         """create class_name
@@ -61,7 +62,6 @@ class HBNBCommand(cmd.Cmd):
                             models.storage.save()
                     else:
                         pass
-
 
     def do_show(self, arg):
         """show class_name object_id
