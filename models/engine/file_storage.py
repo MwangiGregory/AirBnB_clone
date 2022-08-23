@@ -1,8 +1,9 @@
-#!/urs/bin/python3
+#!/usr/bin/python3
 """This module defines class FileStorage"""
 import os
 import json
 from models.base_model import BaseModel
+from models.user import User
 
 
 class FileStorage:
@@ -31,7 +32,7 @@ class FileStorage:
             new_dict[key] = value.to_dict()
 
         with open(self.__file_path, 'w', encoding='utf-8') as f:
-            json.dump(new_dict, f)
+            json.dump(new_dict, f, indent=2)
 
     def delete(self, obj):
         """Deletes obj from the __objects dictionary"""
