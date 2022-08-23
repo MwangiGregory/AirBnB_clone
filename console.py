@@ -4,13 +4,19 @@ import cmd
 import models
 from models.base_model import BaseModel
 from models.user import User
+from models.place import Place
+from models.state import State
+from models.city import City
+from models.amenity import Amenity
+from models.review import Review
 
 
 class HBNBCommand(cmd.Cmd):
     """Defines an airbnb website clone command line
     intepreter"""
     prompt = '(hbnb)'
-    class_list = ['BaseModel', 'User']
+    class_list = ['BaseModel', 'User', 'Place', 'State', 'City',
+                  'Amenity', 'Review']
 
     def do_create(self, line):
         """create class_name
